@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class WebViewX extends StatefulWidget {
   const WebViewX({super.key});
 
@@ -65,6 +70,23 @@ class _WebViewXState extends State<WebViewX> {
           InAppWebView(
             initialUrlRequest: URLRequest(
                 url: Uri.parse("https://axismathematics.com/portal")),
+
+            initialOptions: InAppWebViewGroupOptions(
+              crossPlatform: InAppWebViewOptions(
+                //debuggingEnabled: true,
+                  useOnDownloadStart: true
+              ),
+            ),
+
+            onDownloadStart: (controller, url,) async {
+              // print("onDownloadStart $url");
+              final String _url_files = "$url";
+              void _launchURL_files() async =>
+                  await canLaunch(_url_files) ? await launch(_url_files) : throw 'Could not launch $_url_files';
+              _launchURL_files();
+            },
+
+
             onWebViewCreated: (InAppWebViewController controller) {
               _webViewController = controller;
             },
